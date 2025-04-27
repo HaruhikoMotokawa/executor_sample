@@ -1,4 +1,4 @@
-import 'package:executor_sample/presentation/screens/home/screen.dart';
+import 'package:executor_sample/core/router/route.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -10,21 +10,11 @@ part 'router.g.dart';
 GoRouter router(Ref ref) => _goRouter;
 
 final _goRouter = GoRouter(
+  navigatorKey: rootNavigationKey,
   // アプリが起動した時
-  initialLocation: HomeScreen.path,
+  initialLocation: const HomeRoute().location,
   // パスと画面の組み合わせ
-  routes: [
-    GoRoute(
-      path: HomeScreen.path,
-      name: HomeScreen.name,
-      pageBuilder: (context, state) {
-        return MaterialPage(
-          key: state.pageKey,
-          child: const HomeScreen(),
-        );
-      },
-    ),
-  ],
+  routes: $appRoutes,
   // 遷移ページがないなどのエラーが発生した時に、このページに行く
   errorPageBuilder: (context, state) => MaterialPage(
     key: state.pageKey,
