@@ -1,6 +1,6 @@
 import 'package:executor_sample/core/constants/constants.dart';
 import 'package:executor_sample/core/router/router.dart';
-import 'package:executor_sample/presentations/theme/theme.dart';
+import 'package:executor_sample/presentation/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

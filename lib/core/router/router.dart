@@ -1,4 +1,4 @@
-import 'package:executor_sample/presentations/screens/home/screen.dart';
+import 'package:executor_sample/presentation/screens/home/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
