@@ -1,3 +1,4 @@
+import 'package:executor_sample/core/router/route.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,9 +8,15 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home Screen'),
+      ),
       body: Center(
-        child: Text('Hello World!'),
+        child: ElevatedButton(
+          onPressed: () => const HomeDetailRoute().go(context),
+          child: const Text('Go to Home Detail Screen'),
+        ),
       ),
     );
   }

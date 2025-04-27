@@ -1,6 +1,8 @@
 import 'package:executor_sample/core/router/app_navigation_bar.dart';
 import 'package:executor_sample/presentation/screens/home/screen.dart';
+import 'package:executor_sample/presentation/screens/home_detail/screen.dart';
 import 'package:executor_sample/presentation/screens/todo/screen.dart';
+import 'package:executor_sample/presentation/screens/todo_detail/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,6 +23,12 @@ final rootNavigationKey = GlobalKey<NavigatorState>();
             TypedGoRoute<HomeRoute>(
               path: '/',
               name: 'home_screen',
+              routes: [
+                TypedGoRoute<HomeDetailRoute>(
+                  path: 'home_detail_screen',
+                  name: 'home_detail_screen',
+                ),
+              ],
             ),
           ],
         ),
@@ -29,6 +37,12 @@ final rootNavigationKey = GlobalKey<NavigatorState>();
             TypedGoRoute<TodoRoute>(
               path: '/todo_screen',
               name: 'todo_screen',
+              routes: [
+                TypedGoRoute<TodoDetailRoute>(
+                  path: 'todo_detail_screen',
+                  name: 'todo_detail_screen',
+                ),
+              ],
             ),
           ],
         ),
@@ -95,11 +109,29 @@ class HomeRoute extends GoRouteData {
   }
 }
 
+class HomeDetailRoute extends GoRouteData {
+  const HomeDetailRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const HomeDetailScreen();
+  }
+}
+
 class TodoRoute extends GoRouteData {
   const TodoRoute();
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const TodoScreen();
+  }
+}
+
+class TodoDetailRoute extends GoRouteData {
+  const TodoDetailRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const TodoDetailScreen();
   }
 }
