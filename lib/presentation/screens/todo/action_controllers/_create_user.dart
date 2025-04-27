@@ -38,32 +38,27 @@ _CreateUserController _useCreateUserController(WidgetRef ref) {
   ref.listen(provider, (_, next) {
     if (next.hasError == false && next.isLoading) return;
 
-    final isCurrent = GoRouter.of(context).isCurrentLocation(HomeRoute.path);
+    final isCurrent = GoRouter.of(context).isCurrentLocation(TodoRoute.path);
     if (!isCurrent) return;
 
     if (next.error case final exception? when exception is Exception) {
       switch (exception) {
         case DuplicateUserNameException():
-          showAppDialog(
+          showAppBanner(
             context,
-            title: 'ユーザー名の重複',
-            message: 'このユーザー名はすでに使用されています。',
-            buttonText: '閉じる',
+            message: '同じ名前のユーザーがすでに存在します。',
           );
 
         case ServerErrorException():
-          showAppDialog(
+          showAppBanner(
             context,
-            title: 'サーバーエラー',
-            message: 'サーバーでエラーが発生しました。時間をおいて再試行してください。',
-            buttonText: '閉じる',
+            message: 'サーバーエラーが発生しました。時間をおいて再試行してください。',
           );
+
         default:
-          showAppDialog(
+          showAppBanner(
             context,
-            title: '不明なエラー',
-            message: '予期しないエラーが発生しました。',
-            buttonText: '閉じる',
+            message: '予期しないエラーが発生しました。時間をおいて再試行してください。',
           );
       }
     }

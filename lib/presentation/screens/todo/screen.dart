@@ -1,11 +1,27 @@
+import 'package:async/async.dart';
 import 'package:executor_sample/core/router/route.dart';
+import 'package:executor_sample/data/repositories/user/exception.dart';
+import 'package:executor_sample/domain/models/user.dart';
+import 'package:executor_sample/presentation/shared/banner/app_banner.dart';
+import 'package:executor_sample/presentation/shared/list_tile/app_list_tile.dart';
+import 'package:executor_sample/presentation/shared/list_tile/throw_exception_switch_list_tile.dart';
+import 'package:executor_sample/presentation/shared/snack_bar/app_snack_bar.dart';
+import 'package:executor_sample/presentation/shared/state/throw_exception.dart';
+import 'package:executor_sample/use_case/executors/repositories/user/create_user/executor.dart';
+import 'package:executor_sample/util/extension_go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class TodoScreen extends StatelessWidget {
+part 'action_controllers/_create_user.dart';
+
+class TodoScreen extends HookConsumerWidget {
   const TodoScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final createUserController = _useCreateUserController(ref);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo Screen'),
@@ -16,15 +32,39 @@ class TodoScreen extends StatelessWidget {
           child: Column(
             spacing: 12,
             children: [
-              ElevatedButton(
-                onPressed: () => const TodoDetailRoute().go(context),
-                child: const Text('Go to Todo Detail Screen'),
+              const ThrowExceptionSwitchListTile(),
+              AppListTile(
+                screenName: 'Todo Detail screen',
+                onTap: () => const TodoDetailRoute().go(context),
               ),
               const Divider(),
+              ElevatedButton(
+                onPressed: () =>
+                    _createUserButtonTap(context, createUserController),
+                child: const Text('create user'),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+extension on TodoScreen {
+  Future<void> _createUserButtonTap(
+    BuildContext context,
+    _CreateUserController controller,
+  ) async {
+    final user = User(
+      id: '1',
+      name: 'test',
+      email: 'test@example.com',
+    );
+
+    final result = await controller.action(user);
+    if (!result || !context.mounted) return;
+
+    await showAppSnackBar(context, message: 'User created successfully.');
   }
 }

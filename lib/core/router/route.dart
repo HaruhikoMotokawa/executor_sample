@@ -21,12 +21,12 @@ final rootNavigationKey = GlobalKey<NavigatorState>();
         TypedStatefulShellBranch<HomeBranch>(
           routes: [
             TypedGoRoute<HomeRoute>(
-              path: '/',
-              name: 'home_screen',
+              path: HomeRoute.path,
+              name: HomeRoute.name,
               routes: [
                 TypedGoRoute<HomeDetailRoute>(
-                  path: 'home_detail_screen',
-                  name: 'home_detail_screen',
+                  path: HomeDetailRoute.path,
+                  name: HomeDetailRoute.name,
                 ),
               ],
             ),
@@ -35,12 +35,12 @@ final rootNavigationKey = GlobalKey<NavigatorState>();
         TypedStatefulShellBranch<TodoBranch>(
           routes: [
             TypedGoRoute<TodoRoute>(
-              path: '/todo_screen',
-              name: 'todo_screen',
+              path: TodoRoute.path,
+              name: TodoRoute.name,
               routes: [
                 TypedGoRoute<TodoDetailRoute>(
-                  path: 'todo_detail_screen',
-                  name: 'todo_detail_screen',
+                  path: TodoDetailRoute.path,
+                  name: TodoDetailRoute.name,
                 ),
               ],
             ),
@@ -103,6 +103,9 @@ class NavigationShellRoute extends StatefulShellRouteData {
 class HomeRoute extends GoRouteData {
   const HomeRoute();
 
+  static const path = '/';
+  static const name = 'home_screen';
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const HomeScreen();
@@ -111,6 +114,9 @@ class HomeRoute extends GoRouteData {
 
 class HomeDetailRoute extends GoRouteData {
   const HomeDetailRoute();
+
+  static const path = 'home_detail_screen';
+  static const name = 'home_detail_screen';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -121,6 +127,9 @@ class HomeDetailRoute extends GoRouteData {
 class TodoRoute extends GoRouteData {
   const TodoRoute();
 
+  static const path = '/todo_screen';
+  static const name = 'todo_screen';
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const TodoScreen();
@@ -129,6 +138,9 @@ class TodoRoute extends GoRouteData {
 
 class TodoDetailRoute extends GoRouteData {
   const TodoDetailRoute();
+
+  static const path = 'todo_detail_screen';
+  static const name = 'todo_detail_screen';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
