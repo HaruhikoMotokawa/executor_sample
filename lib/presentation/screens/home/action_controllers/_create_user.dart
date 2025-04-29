@@ -6,71 +6,34 @@ typedef _CreateUserController = ({
 
 /// CreateUserActionを使用するためのフック
 _CreateUserController _useCreateUserController(WidgetRef ref) {
-  //----------------------------------------------------------------------------
-  // property
-  //----------------------------------------------------------------------------
-  final provider = createUserExecutorProvider;
-  final createUser = ref.read(provider.notifier);
-  final context = useContext();
-  final cache = AsyncCache<bool>.ephemeral();
+  final controller = useCreateUserController(
+    ref,
+    HomeRoute.path,
+    onDuplicateUserNameException: (context) {
+      showAppDialog(
+        context,
+        title: 'ユーザー名の重複',
+        message: 'このユーザー名はすでに使用されています。',
+        buttonText: '閉じる',
+      );
+    },
+    onServerErrorException: (context) {
+      showAppDialog(
+        context,
+        title: 'サーバーエラー',
+        message: 'サーバーでエラーが発生しました。時間をおいて再試行してください。',
+        buttonText: '閉じる',
+      );
+    },
+    onDefaultHandler: (context) {
+      showAppDialog(
+        context,
+        title: '不明なエラー',
+        message: '予期しないエラーが発生しました。',
+        buttonText: '閉じる',
+      );
+    },
+  );
 
-  // INFO: テストのために例外をスローするかどうかをwatch
-  final throwException = ref.watch(throwExceptionProvider);
-
-  //----------------------------------------------------------------------------
-  // action
-  //----------------------------------------------------------------------------
-  Future<bool> action(User user) async {
-    return cache.fetch(() async {
-      // INFO: 例外をスローするかどうかを渡す
-      await createUser(user, throwException: throwException);
-
-      final hasError = ref.read(provider).hasError;
-      if (hasError) return false;
-
-      return true;
-    });
-  }
-
-  //----------------------------------------------------------------------------
-  // Exception Handler
-  //----------------------------------------------------------------------------
-  ref.listen(provider, (_, next) {
-    if (next.hasError == false && next.isLoading) return;
-
-    final isCurrent = GoRouter.of(context).isCurrentLocation(HomeRoute.path);
-    if (!isCurrent) return;
-
-    if (next.error case final exception? when exception is Exception) {
-      switch (exception) {
-        case DuplicateUserNameException():
-          showAppDialog(
-            context,
-            title: 'ユーザー名の重複',
-            message: 'このユーザー名はすでに使用されています。',
-            buttonText: '閉じる',
-          );
-
-        case ServerErrorException():
-          showAppDialog(
-            context,
-            title: 'サーバーエラー',
-            message: 'サーバーでエラーが発生しました。時間をおいて再試行してください。',
-            buttonText: '閉じる',
-          );
-        default:
-          showAppDialog(
-            context,
-            title: '不明なエラー',
-            message: '予期しないエラーが発生しました。',
-            buttonText: '閉じる',
-          );
-      }
-    }
-  });
-
-  //----------------------------------------------------------------------------
-  // return
-  //----------------------------------------------------------------------------
-  return (action: action);
+  return (action: controller.action);
 }
