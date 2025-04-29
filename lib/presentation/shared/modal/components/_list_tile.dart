@@ -1,4 +1,4 @@
-part of 'app_modal.dart';
+part of '../app_modal.dart';
 
 class _ListTile extends StatelessWidget {
   const _ListTile({

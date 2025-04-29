@@ -1,4 +1,4 @@
-part of 'app_modal.dart';
+part of '../app_modal.dart';
 
 typedef _ModalController = ({
   Future<bool> Function(User user) createUser,
@@ -6,6 +6,9 @@ typedef _ModalController = ({
   Future<bool> Function(String todoId) scheduleTodoNotification,
 });
 
+/// モーダルのアクションとエラーハンドラを提供するためのフック
+///
+/// 複数のアクションが必要な場合は、ここのアクションをまとめるフックを用意する
 _ModalController _useModalController(WidgetRef ref) {
   final createUserController = _useCreateUserController(ref);
   final updateUserController = _updateUserController(ref);

@@ -11,11 +11,11 @@ import 'package:executor_sample/use_case/executors/services/notification/schedul
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-part '_list_tile.dart';
-part '_modal_controller.dart';
-part 'action_controllers/_create_user.dart';
-part 'action_controllers/_schedule_todo_notification.dart';
-part 'action_controllers/_update_user.dart';
+part 'components/_list_tile.dart';
+part 'controllers/_create_user.dart';
+part 'controllers/_modal_controller.dart';
+part 'controllers/_schedule_todo_notification.dart';
+part 'controllers/_update_user.dart';
 
 class AppModal extends HookConsumerWidget {
   const AppModal({super.key});
@@ -31,6 +31,7 @@ class AppModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // アクションとエラーハンドリングを一括で設定
     final controller = _useModalController(ref);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
