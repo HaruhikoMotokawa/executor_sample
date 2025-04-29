@@ -19,13 +19,17 @@ void useActionExceptionHandler<T>(
   ref.listen<AsyncValue<T>>(
     provider,
     (_, next) {
+      // エラーが発生していない場合は何もしない
       if (next.hasError == false && next.isLoading) return;
 
+      // pathが指定されている場合は判定する
       if (callerPath != null) {
+        // 指定されたpathと現在のpathが一致しない場合は何もしない
         final isCurrent = GoRouter.of(context).isCurrentLocation(callerPath);
         if (!isCurrent) return;
       }
 
+      // エラーが発生している場合はonExceptionを呼び出す
       if (next.error case final exception? when exception is Exception) {
         onException(exception, context);
       }
