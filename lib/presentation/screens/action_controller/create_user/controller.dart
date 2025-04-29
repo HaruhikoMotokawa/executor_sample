@@ -12,11 +12,11 @@ typedef CreateUserController = ({
 });
 
 CreateUserController useCreateUserController(
-  WidgetRef ref,
-  String callerPath, {
+  WidgetRef ref, {
   required void Function(BuildContext context) onDuplicateUserNameException,
   required void Function(BuildContext context) onServerErrorException,
   required void Function(BuildContext context) onDefaultHandler,
+  String? callerPath,
 }) {
   //----------------------------------------------------------------------------
   // property

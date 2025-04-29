@@ -1,4 +1,4 @@
-part of '../screen.dart';
+part of '../app_modal.dart';
 
 typedef _CreateUserController = ({
   Future<bool> Function(User user) action,
@@ -8,13 +8,13 @@ typedef _CreateUserController = ({
 _CreateUserController _useCreateUserController(WidgetRef ref) {
   final controller = useCreateUserController(
     ref,
-    callerPath: HomeRoute.path,
     onDuplicateUserNameException: (context) {
       showAppDialog(
         context,
         title: 'ユーザー名の重複',
         message: 'このユーザー名はすでに使用されています。',
         buttonText: '閉じる',
+        colorType: ColorType.modal,
       );
     },
     onServerErrorException: (context) {
@@ -23,6 +23,7 @@ _CreateUserController _useCreateUserController(WidgetRef ref) {
         title: 'サーバーエラー',
         message: 'サーバーでエラーが発生しました。時間をおいて再試行してください。',
         buttonText: '閉じる',
+        colorType: ColorType.modal,
       );
     },
     onDefaultHandler: (context) {
@@ -31,6 +32,7 @@ _CreateUserController _useCreateUserController(WidgetRef ref) {
         title: '不明なエラー',
         message: '予期しないエラーが発生しました。',
         buttonText: '閉じる',
+        colorType: ColorType.modal,
       );
     },
   );

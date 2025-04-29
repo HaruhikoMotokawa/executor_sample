@@ -8,7 +8,7 @@ typedef _CreateUserController = ({
 _CreateUserController _useCreateUserController(WidgetRef ref) {
   final controller = useCreateUserController(
     ref,
-    TodoRoute.path,
+    callerPath: TodoRoute.path,
     onDuplicateUserNameException: (context) {
       showAppBanner(
         context,

@@ -1,3 +1,4 @@
+import 'package:executor_sample/presentation/shared/modal/app_modal.dart';
 import 'package:flutter/material.dart';
 
 class TodoDetailScreen extends StatelessWidget {
@@ -9,7 +10,20 @@ class TodoDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Todo Detail Screen'),
       ),
-      body: const Placeholder(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 30,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                AppModal.show(context);
+              },
+              child: const Text('app modal'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
