@@ -1,6 +1,6 @@
 import 'package:executor_sample/core/router/route.dart';
 import 'package:executor_sample/domain/models/user.dart';
-import 'package:executor_sample/presentation/screens/action_controller/create_user/controller.dart';
+import 'package:executor_sample/presentation/shared/action_controller/create_user/controller.dart';
 import 'package:executor_sample/presentation/shared/dialog/app_dialog.dart';
 import 'package:executor_sample/presentation/shared/snack_bar/app_snack_bar.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,7 @@
 import 'package:async/async.dart';
 import 'package:executor_sample/data/repositories/user/exception.dart';
 import 'package:executor_sample/domain/models/user.dart';
-import 'package:executor_sample/presentation/screens/action_controller/_shared/use_action_exception_handler.dart';
+import 'package:executor_sample/presentation/shared/action_controller/_shared/use_action_exception_handler.dart';
 import 'package:executor_sample/presentation/shared/state/throw_exception.dart';
 import 'package:executor_sample/use_case/executors/repositories/user/create_user/executor.dart';
 import 'package:flutter/cupertino.dart';

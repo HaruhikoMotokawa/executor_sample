@@ -1,6 +1,6 @@
 import 'package:executor_sample/core/router/route.dart';
 import 'package:executor_sample/domain/models/user.dart';
-import 'package:executor_sample/presentation/screens/action_controller/create_user/controller.dart';
+import 'package:executor_sample/presentation/shared/action_controller/create_user/controller.dart';
 import 'package:executor_sample/presentation/shared/dialog/app_dialog.dart';
 import 'package:executor_sample/presentation/shared/list_tile/app_list_tile.dart';
 import 'package:executor_sample/presentation/shared/list_tile/throw_exception_switch_list_tile.dart';
