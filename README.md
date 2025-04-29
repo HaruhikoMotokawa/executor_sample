@@ -1,7 +1,5 @@
 # executor_sample
 
-<img src="thumbnail/base_sample_thumbnail.png" width="300">
-
 > [!NOTE]
 >  このプロジェクトのFlutterSDKは **3.29.0** です。
 
@@ -34,7 +32,6 @@
   - very_good_analysis（リント）
   - derry（スクリプト実行）
   - go_router（ルーティング）
-  - utility_widgets（UI部品）
 
 derryで使うスクリプトも登録済みです。
 
@@ -85,18 +82,124 @@ lib/
 　   └── executors/       # エグゼキューター実装
 ```
 
-## Executorパターンについて
 
-このプロジェクトでは、ユースケースの実装にExecutorパターンを採用しています。
-Executorは以下の特徴を持ちます：
+## Executorの基本的な役割
+ExecutorはUI層とデータ層の橋渡しを担います。UIから実行を命じられると、受け取った入力パラメータをもとにデータ層の処理（リポジトリやサービス）を呼び出し、結果や状態の更新を行います。
 
-- ビジネスロジックをUIから分離
-- 結果と状態管理の一元化
-- エラーハンドリングの標準化
-- テスト容易性の向上
+### ActionControllerによる実行とエラーハンドリング
+presentation層では、Executorの実行とエラーハンドリングをActionControllerが担当します。ActionControllerは以下の役割を持ちます：
+- 実行命令の受け取り（UIイベントと紐付け）
+- Executor実行後の結果・エラー情報の画面へ伝達
 
-各Executorは以下の要素で構成されています：
-- 入力パラメータ
-- 処理状態
-- 出力結果
-- エラー情報
+### ActionControllerの定義パターン
+ActionControllerは利用範囲によって定義方法や配置場所が異なります：
+- 複数画面で再利用する共通Controller：
+  - presentation/shared/controllers配下に配置し、複数のScreenでimportして使用
+  - 発生する可能性があるExceptionを定義する
+  - 各Exceptionのハンドリングは呼び出す画面、Widget側で定義する
+- 特定画面専用のController：
+  - 該当画面のscreens配下に配置
+  - 発生するExceptionとそのハンドリングを定義する
+
+これらを意識してControllerを定義することで、画面ごとの責務を明確にしつつ、共通処理は再利用可能になります。
+
+### サンプルコード
+
+```dart
+// -----------------------------
+// 1) Executor実装例
+// -----------------------------
+@riverpod
+class ScheduleTodoNotificationExecutor extends _$ScheduleTodoNotificationExecutor {
+  @override
+  FutureOr<void> build() {}
+
+  // 基本的に実行するメソッドは一つだけのため、メソッド名は`call`で定義する
+  Future<void> call({required String todoId}) async {
+    // `AsyncValue.guard`でメソッドをラップして、エラーをリッスンできるようにする
+    state = await AsyncValue.guard(() async {
+      await ref
+        .read(notificationServiceProvider)
+        .scheduleTodoNotification(todoId: todoId);
+    });
+  }
+}
+```
+
+```dart
+// -----------------------------
+// 2) ActionController 定義例/ 複数画面の場合
+// -----------------------------
+CreateUserController useCreateUserController(
+  WidgetRef ref, {
+  required void Function(BuildContext context) onDuplicateUserNameException,
+  required void Function(BuildContext context) onServerErrorException,
+  required void Function(BuildContext context) onDefaultHandler,
+  String? callerPath,
+}) {
+  // エラー監視対象であるExecutor
+  final provider = createUserExecutorProvider;
+  // 実行役
+  final createUser = ref.read(provider.notifier);
+  // 多重実行を防ぐために処理が終わるまでキャッシュする
+  final cache = AsyncCache<bool>.ephemeral();
+
+  // 処理の実行
+  Future<bool> action(User user) async {
+    return cache.fetch(() async {
+      await createUser(user);
+      if (ref.read(provider).hasError) return false;
+      return true;
+    });
+  }
+
+  // exceptionが流れてきた場合にここでキャッチしてハンドリングする
+  // `callerPath`を渡せば、GoRouterで設定したパスによって
+  // 呼び出しもとで反応するかどうかを判定できる
+  useActionExceptionHandler(
+    provider,
+    ref,
+    callerPath: callerPath,
+    onException: (exception, context) {
+      // 複数画面で呼ばれる場合はハンドリングを呼び出しもとで行う
+      switch (exception) {
+        case DuplicateUserNameException():
+          onDuplicateUserNameException(context);
+        case ServerErrorException():
+          onServerErrorException(context);
+        default:
+          onDefaultHandler(context);
+      }
+    },
+  );
+
+  return (action: action);
+}
+```
+
+```dart
+// -----------------------------
+// 3) ActionController 利用例
+// -----------------------------
+Widget build(BuildContext context, WidgetRef ref) {
+  final controller = useCreateUserController(
+    ref,
+    ScreenRoute.path,
+    // ハンドリングをそれぞれ定義する
+    onDuplicateUserNameException: (ctx) => showDialog(...),
+    onServerErrorException: (ctx) => showSnackBar(...),
+    onDefaultHandler: (ctx) => showAlert(...),
+  );
+
+  return ElevatedButton(
+    onPressed: () async {
+      final user = User(...);
+      final success = await controller.action(user);
+      if (success) {
+        // 成功時処理
+      }
+    },
+    child: Text('ユーザー作成'),
+  );
+}
+```
